@@ -5,7 +5,7 @@ on:
     types: [created]
 
 env:
-  TEAM_NAME: "sulmos-projects"
+  VERCEL_TEAM_NAME: "sulmos-projects"
   PROJECT_NAME: console
   VERCEL_TOKEN: ${{ secrets.SULMO_VERCEL_TOKEN }}
 
@@ -32,10 +32,9 @@ jobs:
         with:
           script: |
             const commenter = context.payload.comment.user.login;
-            const orgName = context.repo.owner; // Assuming repo owner is the organization
             try {
               const { status } = await github.rest.orgs.checkMembershipForUser({
-                org: orgName,
+                org: 'cloudforet-io',
                 username: commenter
               });
               if (status !== 204) {
@@ -105,7 +104,7 @@ jobs:
           echo "DEPLOY_URL=$DEPLOY_URL" >> $GITHUB_ENV
 
       - name: Checkout Vercel Target Project
-        run: vercel link --yes --scope=${{ env.TEAM_NAME }} --project=${{ env.PROJECT_NAME }} --token=${{ env.VERCEL_TOKEN }}
+        run: vercel link --yes --scope=${{ env.VERCEL_TEAM_NAME }} --project=${{ env.PROJECT_NAME }} --token=${{ env.VERCEL_TOKEN }}
 
       - name: Pull Vercel Environment Information
         run: vercel pull --yes --token=${{ env.VERCEL_TOKEN }}
